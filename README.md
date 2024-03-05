@@ -26,7 +26,36 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+# Short URL Service
+
+The Short URL Service is a lightweight, high-performance solution for creating and managing short URLs, designed to handle high volumes of traffic and provide fast redirections. This project is built with [NestJS](https://nestjs.com/), a progressive Node.js framework for building efficient and scalable server-side applications.
+
+## Features
+
+- **URL Shortening**: Convert long URLs into manageable short links that are easier to share.
+- **Redirection**: Quick and efficient redirection from short URLs to the original URLs.
+- **Concurrency Handling**: Designed to handle thousands of requests per second while ensuring data integrity and prompt responses.
+- **Custom Alias**: Allows the creation of short URLs with custom aliases.
+- **Analytics**: Tracks access statistics for each short URL, including total hits and hits by User-Agent.
+
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+- Node.js (v14 or later recommended)
+- A running instance of MongoDB
+- Optionally, Docker for containerization
+
 ## Installation
+
+1. **Clone the repository**
+
+```bash
+git clone https://github.com/selvakumar-suyambulingam/short-url.git
+cd short-url
+```
 
 ```bash
 $ npm install
@@ -57,6 +86,10 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## API Documentation
+
+After starting the application, you can access the Swagger API documentation at http://localhost:3000/api.
 
 ## Support
 
