@@ -6,10 +6,10 @@ import { UrlController } from './url/url.controller';
 
 import { UrlModule } from './url/url.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
 import { DataSource } from 'typeorm';
 import { Url } from './url/entities/url.entity';
 import { UrlUsage } from './url/entities/url-usage.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -17,17 +17,20 @@ import { UrlUsage } from './url/entities/url-usage.entity';
       isGlobal: true,
       envFilePath: '.env',
     }),
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      //host: 'host.docker.internal',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'password',
-      database: 'test',
-      entities: [Url, UrlUsage],
-      autoLoadEntities: true,
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DATABASE_HOST'),
+        port: configService.get('DATABASE_PORT'),
+        username: configService.get('DATABASE_USERNAME'),
+        password: configService.get('DATABASE_PASSWORD'),
+        database: configService.get('DATABASE_NAME'),
+        entities: [Url, UrlUsage],
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
     }),
     UrlModule,
   ],
