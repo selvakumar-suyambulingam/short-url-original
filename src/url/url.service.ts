@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Url } from './entities/url.entity';
 import { UrlUsage } from './entities/url-usage.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,8 @@ import { UrlDto } from './dto/url.dto';
 
 @Injectable()
 export class UrlService {
+  private readonly logger = new Logger(UrlService.name);
+
   constructor(
     @InjectRepository(Url)
     private readonly urlRepository: Repository<Url>,
@@ -29,10 +31,13 @@ export class UrlService {
   async create(urlDto: UrlDto): Promise<Url> {
     const { url: longUrl, alias } = urlDto;
 
+    this.logger.log('create: Input', { urlDto });
+
     const newUrl = await this.urlRepository.save({
       alias: alias || generateShortId(),
       longUrl,
     });
+    this.logger.log('create: Success', { newUrl });
 
     return newUrl;
   }
@@ -78,10 +83,12 @@ export class UrlService {
    * @throws {QueryFailedError} Throws an error if the update operation fails.
    */
   async incrementHitCount(urlId: number): Promise<void> {
+    this.logger.log('incrementHitCount: Input', { urlId });
     await this.urlRepository.increment({ id: urlId }, 'hitCount', 1);
   }
 
   async deleteShortUrl(id: number): Promise<void> {
+    this.logger.log('deleteShortUrl: Input', { id });
     await this.urlRepository.softDelete(id);
   }
 
@@ -106,6 +113,7 @@ export class UrlService {
     ip: string,
     userAgent?: string,
   ): Promise<void> {
+    this.logger.log('recordUrlUsage: Input', { urlId, ip, userAgent });
     await this.urlUsageRepository.save({
       urlId,
       ip,

@@ -18,7 +18,6 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UrlService } from './url.service';
 import { UrlDto } from './dto/url.dto';
 import { ConfigService } from '@nestjs/config';
-import { NOTFOUND } from 'dns';
 
 @ApiBearerAuth()
 @ApiTags('urls')
@@ -41,7 +40,9 @@ export class UrlController {
       }
     }
     const url = await this.urlService.create(urlDto);
-    return { url };
+    return {
+      url: `${this.configService.get<string>('CLIENT_URL')}/urls/${url.alias}`,
+    };
   }
 
   @Get('/statistics')
@@ -79,7 +80,6 @@ export class UrlController {
       );
       return { url: url.longUrl, statusCode: 302 };
     } else {
-      //throw new HttpException('URL not found', HttpStatus.NOT_FOUND);
       return {
         url: this.configService.get<string>('CLIENT_URL'),
         statusCode: 404,
